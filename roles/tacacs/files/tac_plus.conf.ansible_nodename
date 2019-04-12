@@ -1,0 +1,72 @@
+key = "INSERT KEY HERE"
+accounting file = /var/log/tac.acct
+
+acl = all-net {
+                permit = 127\.0\.0\.1
+                permit = 172\.16\.
+}
+
+group = admins {
+
+        login = PAM
+        acl = all-net
+
+        #Juniper
+        service = junos-exec {
+        local-user-name = remote
+        allow-commands = "configure interface network routing snmp system trace view firewall"
+        allow-configuration = ""
+        deny-commands = ""
+        deny-configuration = ""
+        }
+
+        #Cisco
+        service = exec {
+                priv-lvl = 15
+                cisco-av-pair = "shell:domains=all/admin/"
+        }
+
+        #fortigate
+        service = fortigate {
+                memberof = tacacs
+                admin_prof = super_admin
+        }
+}
+
+group = read_only {
+        login = PAM
+        acl = all-net
+
+        #Juniper
+        service = junos-exec {
+
+          local-user-name = remote-ro
+          allow-commands = "view"
+          allow-configuration = ""
+          deny-commands = ""
+          deny-configuration = ""
+        }
+
+        #Cisco
+        service = exec {
+                priv-lvl = 1
+                cisco-av-pair = "shell:domains=all/read-all/"
+        }
+
+        #fortigate
+        service = fortigate {
+                memberof = tacacs
+                admin_prof = read_admin
+        }
+
+}
+
+user = admin_example {
+	member = admins
+	pap = PAM #Necessary for fortigate(s)
+}
+
+user = ro_example {
+	member = read_only
+	pap = PAM #Necessary for fortigate(s)
+}

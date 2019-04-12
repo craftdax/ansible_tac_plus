@@ -1,0 +1,12 @@
+/var/log/tac_plus.log {
+    daily
+    dateext
+    missingok
+    notifempty
+    sharedscripts
+    rotate 6
+    compress
+    delaycompress
+    copytruncate
+}
+
