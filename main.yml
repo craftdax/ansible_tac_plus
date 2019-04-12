@@ -1,0 +1,4 @@
+- hosts: tacacs
+  roles:
+  - role: tacacs
+    tags: tacacs

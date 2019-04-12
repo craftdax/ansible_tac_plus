@@ -1,0 +1,31 @@
+---
+- name: Install tac_plus package
+  yum:
+    name: tac_plus.x86_64
+    state: present
+
+- name: Make sure tac_plus is enabled and started
+  yum:
+    name: tac_plus
+    state: started
+    enabled: yes
+
+- name: copy configuration for tacacs to host
+  copy:
+    src: tac_plus.conf.{{ ansible_nodename }}
+    dest: /etc/tac_plus.conf
+  notify: restart tacacs
+
+- name: copy configuration for tacacs to host
+  copy:
+    src: pam.tac_plus
+    dest: /etc/pam.d/tac_plus.conf
+
+- name: copy logrotate for tac_plus
+  copy:
+    src: pam.tac_plus
+    dest: /etc/logrotate.d/tac_plus
+    mode: 0644
+    owner: root
+    group: root
+
